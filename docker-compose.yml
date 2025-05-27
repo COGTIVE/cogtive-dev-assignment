@@ -1,70 +1,67 @@
 # Cogtive Industrial IoT Platform - Docker Compose Configuration
 # This docker-compose file sets up the entire development environment for the Cogtive technical challenge
 
-version: "3.8"
+version: '3.8'
+
 services:
-  # Backend API (.NET Core)
-  api:
-    build: ./backend
-    container_name: cogtive-api
-    ports:
-      - "5211:80"
+  postgres:
+    image: postgres:14
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - DATABASE_PROVIDER=Sqlite # Set to "Postgres" to use PostgreSQL 
-      - ConnectionStrings__PostgresConnection=Host=postgres;Database=cogtive_industrial;Username=postgres;Password=postgres
-    depends_on:
-      - postgres
+      - POSTGRES_DB=cogtive
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     networks:
       - cogtive-network
-    # Volumes can be uncommented by senior candidates to persist SQLite database
-    # volumes:
-    #   - ./backend/data:/app/data
 
-  # Frontend React Web App
+  api:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "5000:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DatabaseProvider=Postgres
+      - ConnectionStrings__PostgresConnection=Host=postgres;Database=cogtive;Username=postgres;Password=postgres
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - cogtive-network
+
   web:
-    build: ./web
-    container_name: cogtive-web
+    build:
+      context: ./web
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
-    environment:
-      - REACT_APP_API_BASE=http://localhost:5211
     depends_on:
       - api
     networks:
       - cogtive-network
 
-  # PostgreSQL Database (optional for senior level)
-  postgres:
-    image: postgres:13-alpine
-    container_name: cogtive-postgres
-    restart: always
+  iot-simulator:
+    build:
+      context: ./iot-simulator
+      dockerfile: Dockerfile
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: cogtive_industrial
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+      - API_ENDPOINT=http://api:80/api/production-data
+    depends_on:
+      - api
     networks:
       - cogtive-network
 
-  # Optional IoT simulator service (for senior level challenge)
-  # Uncomment and implement to simulate IoT devices sending data
-  # iot-simulator:
-  #   build: ./iot-simulator
-  #   container_name: cogtive-iot-simulator
-  #   environment:
-  #     - API_ENDPOINT=http://api:80/api/production-data
-  #   depends_on:
-  #     - api
-  #   networks:
-  #     - cogtive-network
-
 volumes:
-  pgdata:
-    driver: local
+  postgres_data:
 
 networks:
   cogtive-network:
