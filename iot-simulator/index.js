@@ -21,7 +21,7 @@ const MACHINES = [
 // Helper function to generate random production data
 function generateProductionData(machineId) {
     // Generate random efficiency between 70-100%
-    const efficiency = (70 + Math.random() * 30).toFixed(1);
+    const efficiency = parseFloat((70 + Math.random() * 30).toFixed(1));
     
     // Generate random units produced
     const unitsProduced = Math.floor(100 + Math.random() * 500);
@@ -32,8 +32,8 @@ function generateProductionData(machineId) {
     return {
         machineId,
         timestamp: new Date().toISOString(),
-        // Intentional: Efficiency is a string to match the backend's intentional error
-        efficiency: efficiency.toString(),
+        // Fixed: Efficiency is now a number, not a string
+        efficiency: efficiency,
         unitsProduced,
         downtime
     };
