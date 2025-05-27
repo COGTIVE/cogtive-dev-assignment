@@ -1,4 +1,4 @@
-using Xamarin.Forms;
+using Microsoft.Maui.Controls;
 
 namespace CogtiveDevAssignment
 {
@@ -7,7 +7,7 @@ namespace CogtiveDevAssignment
         public App()
         {
             InitializeComponent();
-            MainPage = new MainPage();
+            MainPage = new AppShell();
         }
     }
 }
