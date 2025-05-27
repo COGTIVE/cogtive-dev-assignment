@@ -15,9 +15,9 @@ Este projeto é uma plataforma IoT industrial que consiste em uma aplicação we
 ## Requisitos
 
 - Docker Desktop
-- .NET 7.0 SDK (para desenvolvimento local)
+- .NET 8.0 SDK (para desenvolvimento local)
 - Node.js 16+ (para desenvolvimento local)
-- PostgreSQL 14 (para desenvolvimento local)
+- PostgreSQL 16 (para desenvolvimento local)
 
 ## Configuração e Execução
 
@@ -37,6 +37,62 @@ docker-compose up --build
 - API: http://localhost:5000
 - API Swagger: http://localhost:5000/swagger
 
+## Modelos de Dados
+
+### Machine
+```typescript
+interface Machine {
+  id: number;
+  name: string;
+  serialNumber: string;
+  type: string;
+  installationDate: string;
+  isActive: boolean;
+  description?: string;
+  productionData?: ProductionData[];
+}
+```
+
+### ProductionData
+```typescript
+interface ProductionData {
+  id: number;
+  machineId: number;
+  timestamp: string;
+  efficiency: number;
+  unitsProduced: number;
+  downtime: number; // minutes
+}
+```
+
+## Funcionalidades
+
+### Frontend (React)
+- Lista de máquinas com filtros e ordenação
+- Visualização de dados de produção em tempo real
+- Atualização automática via WebSocket
+- Interface responsiva e moderna
+- Filtros por:
+  - Nome
+  - Número de série
+  - Tipo
+  - Status (Ativo/Inativo)
+- Ordenação por qualquer coluna
+- Limite de 100 registros de produção por máquina para otimização
+
+### Backend (ASP.NET Core)
+- API RESTful
+- WebSocket para dados em tempo real
+- Entity Framework Core com PostgreSQL
+- Swagger para documentação da API
+- Rate limiting para proteção da API
+- Migrations para controle de versão do banco de dados
+
+### IoT Simulator
+- Simula dados de produção em tempo real
+- Envia dados via WebSocket
+- Configurável via variáveis de ambiente
+
 ## Dificuldades Encontradas e Soluções
 
 ### 1. Configuração do Nginx
@@ -55,13 +111,14 @@ docker-compose up --build
 - Alteramos a porta da API para 5000 no `docker-compose.yml`
 - Atualizamos a configuração do Nginx para apontar para a nova porta
 
-### 3. Favicon
+### 3. WebSocket e Atualizações em Tempo Real
 
-**Problema**: Erro 404 ao tentar carregar o favicon.ico.
+**Problema**: Dados em tempo real não estavam sendo atualizados corretamente com filtros aplicados.
 
 **Solução**:
-- O erro é apenas um aviso e não afeta a funcionalidade da aplicação
-- Pode ser resolvido adicionando um favicon ao projeto no futuro
+- Implementamos atualização bidirecional dos dados
+- Mantivemos os filtros durante as atualizações
+- Limitamos o número de registros para otimização
 
 ## Melhorias Implementadas
 
@@ -79,6 +136,11 @@ docker-compose up --build
    - Frontend: 3000
    - API: 5000
    - PostgreSQL: 5432
+
+4. **Performance**:
+   - Limite de 100 registros por máquina
+   - Atualizações otimizadas via WebSocket
+   - Filtros e ordenação eficientes
 
 ## Troubleshooting
 
@@ -110,6 +172,20 @@ docker-compose logs postgres
 
 3. Verifique se o banco de dados foi inicializado corretamente
 
+### Se os dados em tempo real não atualizarem:
+
+1. Verifique a conexão WebSocket:
+```bash
+docker-compose logs api
+```
+
+2. Verifique se o simulador IoT está rodando:
+```bash
+docker-compose logs iot-simulator
+```
+
+3. Verifique o console do navegador para erros de WebSocket
+
 ## Desenvolvimento Local
 
 Para desenvolvimento local sem Docker:
@@ -129,7 +205,7 @@ npm start
 ```
 
 3. Banco de Dados:
-- Instale o PostgreSQL 14
+- Instale o PostgreSQL 16
 - Crie um banco de dados chamado 'cogtive'
 - Configure as credenciais no arquivo de configuração
 
