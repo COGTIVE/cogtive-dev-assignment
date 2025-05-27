@@ -10,88 +10,44 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configure logging
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
+
 // Add services to the container.
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Add CORS services
+// Configure database
+var dbProvider = builder.Configuration["DatabaseProvider"] ?? "Sqlite";
+var connectionString = dbProvider == "Postgres" 
+    ? builder.Configuration.GetConnectionString("PostgresConnection")
+    : builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+{
+    if (dbProvider == "Postgres")
+    {
+        options.UseNpgsql(connectionString);
+    }
+    else
+    {
+        options.UseSqlite(connectionString);
+    }
+});
+
+// Add CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowWebApp",
-        policy => policy.WithOrigins("http://localhost:3000")
-            .AllowAnyHeader()
-            .AllowAnyMethod());
+        builder => builder
+            .WithOrigins("http://localhost:3000")
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
-// Configure DbContext with SQLite by default or PostgreSQL via env variable
-var dbProvider = builder.Configuration["DATABASE_PROVIDER"] ?? "Sqlite";
-if (dbProvider.Equals("Postgres", StringComparison.OrdinalIgnoreCase))
-{
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection")));
-}
-else
-{
-    builder.Services.AddDbContext<AppDbContext>(options =>
-        options.UseSqlite(builder.Configuration.GetConnectionString("SqliteConnection")));
-}
-
 var app = builder.Build();
-
-// Ensure database is created and seed initial data
-using (var scope = app.Services.CreateScope())
-{
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-
-    try 
-    {
-        // Fix: Check if database exists but tables don't
-        if (context.Database.CanConnect())
-        {
-            try
-            {
-                // This will throw exception if tables don't exist
-                var machinesExist = context.Machines.Any();
-                logger.LogInformation("Database connection successful. Tables already exist.");
-            }
-            catch
-            {
-                // Tables don't exist, recreate the database
-                logger.LogWarning("Database exists but tables are missing. Recreating database...");
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
-                InitSeedData(context);
-                logger.LogInformation("Database recreated with seed data.");
-            }
-        }
-        else
-        {
-            // Database doesn't exist, create it
-            logger.LogInformation("Creating new database with initial schema...");
-            context.Database.EnsureCreated();
-            InitSeedData(context);
-            logger.LogInformation("New database created with seed data.");
-        }
-    }
-    catch (Exception ex)
-    {
-        // Handle any unexpected errors
-        logger.LogError(ex, "Database initialization failed. Recreating from scratch.");
-        try
-        {
-            context.Database.EnsureDeleted();
-            context.Database.EnsureCreated();
-            InitSeedData(context);
-            logger.LogInformation("Database recovery successful.");
-        }
-        catch (Exception innerEx)
-        {
-            logger.LogCritical(innerEx, "Critical error: Could not recover database.");
-            throw; // Rethrow as this is a critical error
-        }
-    }
-}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -101,9 +57,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Use CORS
 app.UseCors("AllowWebApp");
+
+// Initialize database
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<AppDbContext>();
+    context.Database.EnsureCreated();
+    InitSeedData(context);
+}
 
 // Define API endpoints
 app.MapGet("/api/machines", async (AppDbContext context) =>
@@ -138,7 +101,6 @@ app.MapGet("/api/machines/{id}/production-data", async (int id, AppDbContext con
 .Produces<List<ProductionData>>(StatusCodes.Status200OK)
 .Produces(StatusCodes.Status404NotFound);
 
-// Optional endpoint for seniors to implement IoT data reception
 app.MapPost("/api/production-data", async (ProductionData data, AppDbContext context) =>
 {
     context.ProductionData.Add(data);
@@ -153,6 +115,8 @@ app.Run();
 // Helper method to seed initial data
 void InitSeedData(AppDbContext context)
 {
+    if (context.Machines.Any()) return;
+
     // Seed machines
     context.Machines.AddRange(
         new Machine { 
@@ -185,21 +149,21 @@ void InitSeedData(AppDbContext context)
         new ProductionData { 
             MachineId = 1, 
             Timestamp = now.AddHours(-4), 
-            Efficiency = "92.7", // Intentional error: string instead of decimal
+            Efficiency = 92.7m,
             UnitsProduced = 427, 
             Downtime = 24 
         },
         new ProductionData { 
             MachineId = 2, 
             Timestamp = now.AddHours(-3), 
-            Efficiency = "88.3", 
+            Efficiency = 88.3m, 
             UnitsProduced = 195, 
             Downtime = 32 
         },
         new ProductionData { 
             MachineId = 1, 
             Timestamp = now.AddHours(-2), 
-            Efficiency = "95.1", 
+            Efficiency = 95.1m, 
             UnitsProduced = 512, 
             Downtime = 15 
         }
