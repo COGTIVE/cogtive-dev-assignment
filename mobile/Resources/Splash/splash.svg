@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="456" height="456" viewBox="0 0 456 456" xmlns="http://www.w3.org/2000/svg">
+    <rect x="0" y="0" width="456" height="456" fill="#0056B3"/>
+    <text x="228" y="228" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="48" font-family="Arial">
+        Cogtive
+    </text>
+    <text x="228" y="280" text-anchor="middle" dominant-baseline="middle" fill="white" font-size="24" font-family="Arial">
+        Industrial IoT
+    </text>
+</svg> 
