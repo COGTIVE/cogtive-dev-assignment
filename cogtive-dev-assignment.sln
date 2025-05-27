@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cogtive.DevAssignment.Api", "backend\Cogtive.DevAssignment.Api.csproj", "{C00F923C-E06B-1DFC-E773-EEB7B7327742}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CogtiveDevAssignment", "mobile\CogtiveDevAssignment.csproj", "{63B98B5F-17BA-4E74-1D0F-9A7B13BB8E0D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C00F923C-E06B-1DFC-E773-EEB7B7327742}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C00F923C-E06B-1DFC-E773-EEB7B7327742}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C00F923C-E06B-1DFC-E773-EEB7B7327742}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C00F923C-E06B-1DFC-E773-EEB7B7327742}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63B98B5F-17BA-4E74-1D0F-9A7B13BB8E0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63B98B5F-17BA-4E74-1D0F-9A7B13BB8E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63B98B5F-17BA-4E74-1D0F-9A7B13BB8E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63B98B5F-17BA-4E74-1D0F-9A7B13BB8E0D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCDAE3A3-59A1-41F1-81A3-D3D276EE13FE}
+	EndGlobalSection
+EndGlobal
