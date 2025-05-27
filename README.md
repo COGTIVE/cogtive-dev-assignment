@@ -1,242 +1,197 @@
-# Cogtive Technical Challenge
+# Cogtive Industrial IoT Platform
 
-Welcome to Cogtive's technical challenge! This repository contains a simplified version of our industrial IoT platform architecture to help us evaluate your skills as a developer.
+Este projeto é uma plataforma IoT industrial que consiste em uma aplicação web, uma API backend, um simulador IoT e um banco de dados PostgreSQL.
 
-## About Cogtive
+## Estrutura do Projeto
 
-Cogtive is a SaaS platform for factory floor operations, focused on:
-- Production tracking and efficiency monitoring (OEE)
-- Equipment, process stages, and batch management
-- Real-time data collection
-- IoT device integration
-- Offline operation with later synchronization
+```
+.
+├── backend/           # API .NET Core
+├── web/              # Frontend React
+├── iot-simulator/    # Simulador de dispositivos IoT
+└── docker-compose.yml
+```
 
-## Technology Stack
+## Requisitos
 
-- **Backend**: .NET Core API with Entity Framework Core
-- **Frontend Web**: React with TypeScript
-- **Mobile**: Xamarin.Forms (with optional migration to .NET MAUI)
-- **Databases**: SQLite (default), PostgreSQL (optional)
-- **Containerization**: Docker & Docker Compose (optional)
+- Docker Desktop
+- .NET 7.0 SDK (para desenvolvimento local)
+- Node.js 16+ (para desenvolvimento local)
+- PostgreSQL 14 (para desenvolvimento local)
 
-## Repository Structure
+## Configuração e Execução
 
-- `/backend`: .NET Core API service
-- `/web`: React frontend application
-- `/mobile`: Xamarin.Forms mobile application for industrial operators
-- `/iot-simulator`: IoT device simulator for generating metrics data (for senior level)
-- `/scripts`: Utility scripts for environment reset and application startup
-- `docker-compose.yml`: Configuration for running all services
-
-## Getting Started
-
-### Prerequisites
-- .NET SDK (6.0 or later)
-- Node.js (16 or later)
-- Visual Studio or Visual Studio Code for mobile development
-- (Optional) Docker & Docker Compose
-
-### Environment Setup
-
-For a quick start, use the provided scripts:
-
-#### Unix/Mac/Linux
+1. Clone o repositório:
 ```bash
-# Start the backend and frontend
-./scripts/start-app.sh
-
-# If you need to reset the environment first
-./scripts/reset-environment.sh
+git clone [URL_DO_REPOSITÓRIO]
+cd cogtive-dev-assignment
 ```
 
-#### Windows
-```batch
-# Start the backend and frontend
-scripts\start-app.bat
-
-# If you need to reset the environment first
-scripts\reset-environment.bat
+2. Execute o projeto usando Docker Compose:
+```bash
+docker-compose up --build
 ```
 
-### Manual Setup
+3. Acesse as aplicações:
+- Frontend: http://localhost:3000
+- API: http://localhost:5000
+- API Swagger: http://localhost:5000/swagger
 
-#### Backend API
+## Dificuldades Encontradas e Soluções
+
+### 1. Configuração do Nginx
+
+**Problema**: O frontend não estava carregando corretamente devido a uma incompatibilidade entre as portas configuradas no Nginx e no Docker.
+
+**Solução**: 
+- Modificamos o arquivo `web/nginx.conf` para escutar na porta 3000
+- Atualizamos o Dockerfile do frontend para usar a configuração correta do Nginx
+
+### 2. Portas da API
+
+**Problema**: A API estava exposta na porta 5211, o que poderia causar confusão.
+
+**Solução**:
+- Alteramos a porta da API para 5000 no `docker-compose.yml`
+- Atualizamos a configuração do Nginx para apontar para a nova porta
+
+### 3. Favicon
+
+**Problema**: Erro 404 ao tentar carregar o favicon.ico.
+
+**Solução**:
+- O erro é apenas um aviso e não afeta a funcionalidade da aplicação
+- Pode ser resolvido adicionando um favicon ao projeto no futuro
+
+## Melhorias Implementadas
+
+1. **Configuração do Nginx**:
+   - Adicionados headers de segurança
+   - Configurada compressão gzip
+   - Otimizado cache de assets estáticos
+
+2. **Docker Compose**:
+   - Configurado healthcheck para o PostgreSQL
+   - Melhorada a ordem de inicialização dos serviços
+   - Configurada rede dedicada para comunicação entre containers
+
+3. **Portas**:
+   - Frontend: 3000
+   - API: 5000
+   - PostgreSQL: 5432
+
+## Troubleshooting
+
+### Se a aplicação não carregar:
+
+1. Verifique se todos os containers estão rodando:
+```bash
+docker-compose ps
+```
+
+2. Verifique os logs dos containers:
+```bash
+docker-compose logs web
+docker-compose logs api
+```
+
+3. Limpe o cache do navegador e tente acessar novamente
+
+4. Verifique se as portas 3000 e 5000 não estão sendo usadas por outros serviços
+
+### Se a API não responder:
+
+1. Verifique se o PostgreSQL está saudável:
+```bash
+docker-compose logs postgres
+```
+
+2. Tente acessar o Swagger em http://localhost:5000/swagger
+
+3. Verifique se o banco de dados foi inicializado corretamente
+
+## Desenvolvimento Local
+
+Para desenvolvimento local sem Docker:
+
+1. Backend (.NET):
 ```bash
 cd backend
 dotnet restore
 dotnet run
 ```
-The API will be available at the URL shown in the console output (typically `https://localhost:5211`).
 
-API endpoints:
-- GET `/api/machines` - Returns a list of industrial machines
-- GET `/api/production-data` - Returns production metrics
-- GET `/api/machines/{id}` - Returns a specific machine
-- GET `/api/machines/{id}/production-data` - Returns production data for a specific machine
-- POST `/api/production-data` - Adds new production data (for IoT simulator)
-
-#### Frontend Web
+2. Frontend (React):
 ```bash
 cd web
 npm install
 npm start
 ```
-The web app will be available at `http://localhost:3000`.
 
-#### Mobile App
-```bash
-cd mobile
-dotnet restore
-# Open the .csproj in Visual Studio
-```
+3. Banco de Dados:
+- Instale o PostgreSQL 14
+- Crie um banco de dados chamado 'cogtive'
+- Configure as credenciais no arquivo de configuração
 
-The mobile app is designed for factory operators to record production data and interact with IoT devices on the shop floor. For Android emulator testing, it uses `10.0.2.2` to connect to the API on your host machine.
+## Estratégia de Branches
 
-## Challenge Tasks
+### Branches Principais
 
-Choose the level that matches your experience. Each level includes all requirements from previous levels.
+- `main`: Branch principal do projeto, contém o código em produção
+- `develop`: Branch de desenvolvimento, onde as features são integradas
 
-### Junior Level Tasks
+### Branches de Desenvolvimento
 
-**Objective:** Demonstrate your ability to understand and work with an existing codebase.
+- `feature/*`: Para novas funcionalidades
+  - Exemplo: `feature/autenticacao`, `feature/dashboard`
+- `bugfix/*`: Para correções de bugs
+  - Exemplo: `bugfix/login-error`, `bugfix/api-timeout`
+- `hotfix/*`: Para correções urgentes em produção
+  - Exemplo: `hotfix/security-patch`, `hotfix/critical-error`
+- `release/*`: Para preparação de releases
+  - Exemplo: `release/v1.0.0`, `release/v1.1.0`
 
-**Required Deliverables:**
+### Convenções de Nomenclatura
 
-1. **Working Environment Setup**
-   - Get the backend API running with SQLite database
-   - Get the frontend web application displaying machine data
-   - Verify the connection between components
+- Use kebab-case para nomes de branches
+- Use prefixos descritivos (feature/, bugfix/, hotfix/, release/)
+- Seja específico e conciso no nome da branch
+- Inclua o número do ticket/issue quando aplicável
 
-2. **Intentional Error Identification**
-   - Find and document the intentional error in the data model (hint: check the `Efficiency` property in production data)
-   - Create a brief markdown document explaining what's wrong and how it affects the application
-
-3. **Basic Improvement (choose ONE)**
-   - Add proper validation attributes to the backend models
-   - Improve the UI of the machine listing in the frontend
-   - Add a loading indicator to the frontend while data is being fetched
-
-**Evaluation Focus:**
-- Following setup instructions correctly
-- Understanding basic code structure
-- Attention to detail in finding the intentional error
-- Clean, readable code for your improvement
-
-### Mid-Level Tasks
-
-**Objective:** Demonstrate your ability to implement better architecture and add meaningful features.
-
-**Required Deliverables:**
-
-1. **Data Model Fix**
-   - Fix the intentional error in the data model (changing `Efficiency` from string to decimal/number)
-   - Update all components to work with the fixed data model
-   - Ensure proper type conversion in the API and frontend
-
-2. **Error Handling**
-   - Implement comprehensive error handling in the React frontend
-   - Add appropriate user feedback (error messages, loading states)
-   - Make sure the UI gracefully handles API failures
-
-3. **Frontend Enhancements**
-   - Implement filtering of machines by status (active/inactive)
-   - Implement sorting of machines by name, type, and status
-   - Add a search functionality to find machines by name or serial number
-
-4. **Automated Testing**
-   - Add unit tests for at least one backend component
-   - Add unit tests for at least one frontend component
-   - Ensure tests can be easily run with standard commands
-
-**Evaluation Focus:**
-- Clean architecture and code organization
-- Proper implementation of state management
-- User experience considerations
-- Testing strategy and implementation
-
-### Senior Level Tasks
-
-**Objective:** Demonstrate your ability to architect complex systems and implement advanced features.
-
-**Required Deliverables:**
-
-1. **Database Integration**
-   - Implement PostgreSQL integration instead of SQLite
-   - Configure proper database migrations
-   - Document the setup process in your submission README
-
-2. **Containerization**
-   - Update Docker configuration for all components
-   - Ensure proper networking between Docker containers
-   - Provide Docker Compose configuration for easy startup
-
-3. **Mobile App Enhancement**
-   - Migrate at least one component of the mobile app to .NET MAUI
-   - Ensure the migrated component functions correctly
-   - Document the migration process and any challenges faced
-
-4. **IoT Integration**
-   - Implement the IoT device simulator to generate random machine metrics
-   - Establish connection between the simulator and API
-   - Display real-time updates in the frontend when new data arrives
-   - Add a visualization component for the metrics data
-
-5. **Architecture Documentation**
-   - Provide a detailed markdown document proposing architectural improvements
-   - Include diagrams (can be simple) illustrating your proposed architecture
-   - Address scalability, maintainability, and code organization concerns
-
-**Evaluation Focus:**
-- System architecture and design decisions
-- Implementation quality of advanced features
-- Documentation clarity and thoroughness
-- DevOps and containerization approach
-- Real-time data handling capabilities
-
-## Evaluation Criteria
-
-Your submission will be evaluated based on:
-
-- **Code Quality**: Well-structured, readable, and maintainable code
-- **Technical Understanding**: Proper use of technologies and design patterns
-- **Problem Solving**: Ability to identify and fix issues effectively
-- **Architecture**: Component organization and interaction (especially for senior level)
-- **Documentation**: Clear explanations and setup instructions
-
-## Troubleshooting
-
-### Environment Reset
-
-If you encounter issues with the database or environment, reset it using:
+### Exemplos de Boas Práticas
 
 ```bash
-# Unix/Mac/Linux
-./scripts/reset-environment.sh
+# Nova feature
+git checkout -b feature/autenticacao-google
 
-# Windows
-scripts\reset-environment.bat
+# Correção de bug
+git checkout -b bugfix/login-mobile
+
+# Hotfix urgente
+git checkout -b hotfix/api-crash
+
+# Preparação de release
+git checkout -b release/v1.2.0
 ```
 
-For more detailed reset instructions, see [ENVIRONMENT-RESET.md](./ENVIRONMENT-RESET.md).
+### Fluxo de Trabalho
 
-### Common Issues
+1. Crie uma branch a partir de `develop`
+2. Desenvolva sua feature/correção
+3. Faça commits frequentes e descritivos
+4. Crie um Pull Request para `develop`
+5. Após aprovação e testes, faça merge
+6. Para releases, crie uma branch `release` a partir de `develop`
+7. Após testes em `release`, faça merge em `main` e `develop`
 
-- **Database Errors**: If you see SQLite errors like "no such table", use the reset script to recreate the database.
-- **TypeScript Errors**: For React type issues, run `npm install --save-dev @types/react @types/react-dom`.
-- **CORS Issues**: If the frontend can't connect to the backend, check CORS configuration in Program.cs.
-- **Docker Issues**: Ensure all needed Dockerfiles exist and configuration is correct.
-- **Mobile Connection**: Android emulators use `10.0.2.2` for localhost; iOS simulators use `localhost` or `127.0.0.1`.
+## Contribuição
 
-## Submission Guidelines
+1. Faça um fork do projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
+4. Push para a branch (`git push origin feature/nova-feature`)
+5. Abra um Pull Request
 
-1. Fork this repository
-2. Implement your solution based on your chosen level
-3. Submit a pull request OR send us a zip file of your solution
-4. Include a README with:
-   - Which level you completed
-   - Your approach to solving the tasks
-   - Any challenges you faced and how you solved them
-   - Setup instructions for reviewing your solution
-   - Any additional notes or considerations
+## Licença
 
-Good luck, and we look forward to seeing your solution!
+Este projeto está sob a licença [INSERIR TIPO DE LICENÇA].
