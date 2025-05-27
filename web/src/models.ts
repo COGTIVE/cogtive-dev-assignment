@@ -3,7 +3,10 @@ export interface Machine {
   name: string;
   serialNumber: string;
   type: string;
+  installationDate: string;
   isActive: boolean;
+  description?: string;
+  productionData?: ProductionData[];
 }
 
 export interface ProductionData {
