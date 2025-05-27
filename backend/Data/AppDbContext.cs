@@ -22,7 +22,8 @@ public class AppDbContext : DbContext
         // Configure relationship
         modelBuilder.Entity<ProductionData>()
             .HasOne<Machine>()
-            .WithMany()
-            .HasForeignKey(p => p.MachineId);
+            .WithMany(m => m.ProductionData)
+            .HasForeignKey(p => p.MachineId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
