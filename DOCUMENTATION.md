@@ -1,61 +1,61 @@
-# Cogtive Industrial IoT Platform Documentation
+# Documentação da Plataforma IoT Industrial Cogtive
 
-## Overview
+## Visão Geral
 
-The Cogtive Industrial IoT Platform is a comprehensive solution for factory floor operations, providing real-time monitoring, data collection, and analysis capabilities. This documentation covers the implementation details, architecture, and setup instructions for the platform.
+A Plataforma IoT Industrial Cogtive é uma solução abrangente para operações de chão de fábrica, fornecendo capacidades de monitoramento em tempo real, coleta de dados e análise. Esta documentação abrange os detalhes de implementação, arquitetura e instruções de configuração da plataforma.
 
-## Architecture
+## Arquitetura
 
-### System Components
+### Componentes do Sistema
 
-1. **Backend API (.NET Core)**
-   - RESTful API for data management
-   - Entity Framework Core for data access
-   - SQLite database (default)
-   - PostgreSQL database (optional)
-   - Real-time data processing
+1. **API Backend (.NET Core)**
+   - API RESTful para gerenciamento de dados
+   - Entity Framework Core para acesso a dados
+   - Banco de dados SQLite (padrão)
+   - Banco de dados PostgreSQL (opcional)
+   - Processamento de dados em tempo real
 
-2. **Frontend Web Application (React)**
-   - Modern, responsive UI
-   - Real-time data visualization
-   - Advanced filtering and sorting
-   - Error handling and loading states
-   - Search functionality
-   - Status-based filtering
+2. **Aplicação Web Frontend (React)**
+   - Interface moderna e responsiva
+   - Visualização de dados em tempo real
+   - Filtragem e ordenação avançadas
+   - Tratamento de erros e estados de carregamento
+   - Funcionalidade de busca
+   - Filtragem baseada em status
 
-3. **Mobile Application (Xamarin.Forms)**
-   - Factory floor operations interface
-   - Offline data collection
-   - QR code scanning capability
-   - Data synchronization
-   - Local storage for offline mode
-   - Error handling and user feedback
+3. **Aplicação Mobile (.NET MAUI)**
+   - Interface para operações de chão de fábrica
+   - Coleta de dados offline
+   - Capacidade de escaneamento de QR code
+   - Sincronização de dados
+   - Armazenamento local para modo offline
+   - Tratamento de erros e feedback ao usuário
 
-4. **IoT Simulator**
-   - Simulates industrial machine data
-   - Configurable data generation
-   - Real-time data streaming
-   - Error simulation capabilities
-   - Multiple machine support
+4. **Simulador IoT**
+   - Simula dados de máquinas industriais
+   - Geração de dados configurável
+   - Streaming de dados em tempo real
+   - Capacidades de simulação de erros
+   - Suporte a múltiplas máquinas
 
-### Data Flow
+### Fluxo de Dados
 
 ```mermaid
 graph LR
-    A[IoT Devices] --> B[IoT Simulator]
-    B --> C[Backend API]
-    C --> D[SQLite/PostgreSQL Database]
-    C --> E[Web Frontend]
-    C --> F[Mobile App]
-    F --> G[Local Storage]
+    A[Dispositivos IoT] --> B[Simulador IoT]
+    B --> C[API Backend]
+    C --> D[Banco de Dados SQLite/PostgreSQL]
+    C --> E[Frontend Web]
+    C --> F[Aplicativo Mobile]
+    F --> G[Armazenamento Local]
     G --> C
 ```
 
-## Implementation Details
+## Detalhes de Implementação
 
-### Backend Implementation
+### Implementação do Backend
 
-1. **Data Models**
+1. **Modelos de Dados**
    ```csharp
    public class Machine
    {
@@ -77,66 +77,42 @@ graph LR
    }
    ```
 
-2. **Database Configuration**
-   - SQLite (default)
-   - PostgreSQL (optional)
-   - Entity Framework Core migrations
-   - Proper indexing on MachineId
+2. **Configuração do Banco de Dados**
+   - SQLite (padrão)
+   - PostgreSQL (opcional)
+   - Migrações do Entity Framework Core
+   - Indexação adequada em MachineId
 
-3. **API Endpoints**
-   - GET `/api/machines` - List all machines
-   - GET `/api/machines/{id}` - Get machine details
-   - GET `/api/machines/{id}/production-data` - Get machine production data
-   - GET `/api/production-data` - List all production data
-   - POST `/api/production-data` - Add new production data
+3. **Endpoints da API**
+   - GET `/api/machines` - Listar todas as máquinas
+   - GET `/api/machines/{id}` - Obter detalhes da máquina
+   - GET `/api/machines/{id}/production-data` - Obter dados de produção da máquina
+   - GET `/api/production-data` - Listar todos os dados de produção
+   - POST `/api/production-data` - Adicionar novos dados de produção
 
-### Frontend Implementation
+### Implementação do Frontend
 
-1. **Features**
-   - Machine listing with filtering and sorting
-   - Real-time production data visualization
-   - Search functionality
-   - Status-based filtering
-   - Error handling and loading states
-   - Responsive design
+1. **Funcionalidades**
+   - Listagem de máquinas com filtragem e ordenação
+   - Visualização de dados de produção em tempo real
+   - Funcionalidade de busca
+   - Filtragem baseada em status
+   - Tratamento de erros e estados de carregamento
+   - Design responsivo
 
-2. **State Management**
-   - React hooks for state management
-   - Proper error handling
-   - Loading states
-   - Data caching
+2. **Gerenciamento de Estado**
+   - React hooks para gerenciamento de estado
+   - Tratamento adequado de erros
+   - Estados de carregamento
+   - Cache de dados
 
-3. **UI Components**
-   - Machine list with sorting and filtering
-   - Production data visualization
-   - Search input
-   - Status filters
-   - Error messages
-   - Loading indicators
-
-### Mobile Implementation
-
-1. **Features**
-   - Offline-first approach
-   - Data synchronization
-   - QR code scanning
-   - Production data entry
-   - Error handling
-   - User feedback
-
-2. **Offline Support**
-   - Local storage for offline data
-   - Automatic synchronization
-   - Conflict resolution
-   - Network status monitoring
-
-3. **UI Components**
-   - Machine selection
-   - Production data entry form
-   - QR code scanner
-   - Sync status indicator
-   - Error messages
-   - Loading indicators
+3. **Componentes de UI**
+   - Lista de máquinas com ordenação e filtragem
+   - Visualização de dados de produção
+   - Campo de busca
+   - Filtros de status
+   - Mensagens de erro
+   - Indicadores de carregamento
 
 ### Implementação Mobile (.NET MAUI)
 
@@ -181,7 +157,7 @@ graph LR
      - Gerenciamento de estado
 
    - **Comunicação**
-     - REST API integration
+     - Integração com API REST
      - WebSockets para dados em tempo real
      - Tratamento de conexão offline
 
@@ -197,7 +173,7 @@ graph LR
    - Gerenciamento de estado
    - Tratamento de erros
    - Testes unitários
-   - Performance optimization
+   - Otimização de performance
 
 6. **Requisitos do Sistema**
    - Visual Studio 2022 ou posterior
@@ -329,24 +305,24 @@ graph LR
    - Tratamento de falhas de rede
    - Feedback visual para debugging
 
-## Setup Instructions
+## Instruções de Configuração
 
-### Prerequisites
+### Pré-requisitos
 
-- .NET SDK 6.0 or later
-- Node.js 16 or later
-- Visual Studio or VS Code
-- (Optional) Docker & Docker Compose
+- .NET SDK 6.0 ou superior
+- Node.js 16 ou superior
+- Visual Studio ou VS Code
+- (Opcional) Docker & Docker Compose
 
-### Environment Setup
+### Configuração do Ambiente
 
-1. **Clone the Repository**
+1. **Clonar o Repositório**
    ```bash
-   git clone https://github.com/your-username/cogtive-dev-assignment.git
+   git clone https://github.com/seu-usuario/cogtive-dev-assignment.git
    cd cogtive-dev-assignment
    ```
 
-2. **Start the Application**
+2. **Iniciar a Aplicação**
    ```bash
    # Windows
    scripts\start-app.bat
@@ -355,120 +331,120 @@ graph LR
    ./scripts/start-app.sh
    ```
 
-3. **Access the Applications**
-   - Web Frontend: http://localhost:3000
+3. **Acessar as Aplicações**
+   - Frontend Web: http://localhost:3000
    - API: http://localhost:5211
-   - Mobile App: Open in Visual Studio
+   - Aplicativo Mobile: Abrir no Visual Studio
 
-### Database Configuration
+### Configuração do Banco de Dados
 
-1. **SQLite (Default)**
-   - No additional configuration needed
-   - Data stored in `products.db`
+1. **SQLite (Padrão)**
+   - Nenhuma configuração adicional necessária
+   - Dados armazenados em `products.db`
 
-2. **PostgreSQL (Optional)**
-   - Set environment variable: `DATABASE_PROVIDER=Postgres`
-   - Configure connection string in `appsettings.json`
-   - Database will be automatically created and migrated
+2. **PostgreSQL (Opcional)**
+   - Definir variável de ambiente: `DATABASE_PROVIDER=Postgres`
+   - Configurar string de conexão em `appsettings.json`
+   - O banco de dados será criado e migrado automaticamente
 
-## Development Guidelines
+## Diretrizes de Desenvolvimento
 
-### Code Structure
+### Estrutura do Código
 
 ```
 cogtive-dev-assignment/
-├── backend/           # .NET Core API
-├── web/              # React frontend
-├── mobile/           # Xamarin.Forms app
-├── iot-simulator/    # IoT device simulator
-└── scripts/          # Utility scripts
+├── backend/           # API .NET Core
+├── web/              # Frontend React
+├── mobile/           # Aplicativo .NET MAUI
+├── iot-simulator/    # Simulador de dispositivos IoT
+└── scripts/          # Scripts utilitários
 ```
 
-### Best Practices
+### Boas Práticas
 
-1. **Code Organization**
-   - Follow SOLID principles
-   - Use dependency injection
-   - Implement proper error handling
-   - Write unit tests
+1. **Organização do Código**
+   - Seguir princípios SOLID
+   - Usar injeção de dependência
+   - Implementar tratamento adequado de erros
+   - Escrever testes unitários
 
-2. **Database**
-   - Use migrations for schema changes
-   - Implement proper indexing
-   - Follow naming conventions
-   - Use transactions when needed
+2. **Banco de Dados**
+   - Usar migrações para alterações de esquema
+   - Implementar indexação adequada
+   - Seguir convenções de nomenclatura
+   - Usar transações quando necessário
 
 3. **Frontend**
-   - Component-based architecture
-   - State management
-   - Error boundaries
-   - Loading states
+   - Arquitetura baseada em componentes
+   - Gerenciamento de estado
+   - Limites de erro
+   - Estados de carregamento
 
 4. **Mobile**
-   - Offline-first approach
-   - Data synchronization
-   - Error handling
-   - User feedback
+   - Abordagem offline-first
+   - Sincronização de dados
+   - Tratamento de erros
+   - Feedback ao usuário
 
-## Troubleshooting
+## Solução de Problemas
 
-### Common Issues
+### Problemas Comuns
 
-1. **Database Connection**
-   - Check connection strings
-   - Verify database is running
-   - Check network connectivity
+1. **Conexão com Banco de Dados**
+   - Verificar strings de conexão
+   - Verificar se o banco de dados está rodando
+   - Verificar conectividade de rede
 
-2. **API Issues**
-   - Check API logs
-   - Verify environment variables
-   - Check CORS configuration
+2. **Problemas com API**
+   - Verificar logs da API
+   - Verificar variáveis de ambiente
+   - Verificar configuração CORS
 
-3. **Frontend Issues**
-   - Clear browser cache
-   - Check console errors
-   - Verify API connectivity
+3. **Problemas com Frontend**
+   - Limpar cache do navegador
+   - Verificar erros no console
+   - Verificar conectividade com API
 
-4. **Mobile Issues**
-   - Check network connectivity
-   - Verify API URL configuration
-   - Check local storage permissions
+4. **Problemas com Mobile**
+   - Verificar conectividade de rede
+   - Verificar configuração de URL da API
+   - Verificar permissões de armazenamento local
 
-### Logging
+### Logs
 
-- Backend logs: Console output
-- Frontend logs: Browser console
-- Mobile logs: Visual Studio output
-- Database logs: SQLite/PostgreSQL logs
+- Logs do Backend: Saída do console
+- Logs do Frontend: Console do navegador
+- Logs do Mobile: Saída do Visual Studio
+- Logs do Banco de Dados: Logs SQLite/PostgreSQL
 
-## Future Improvements
+## Melhorias Futuras
 
-1. **Architecture**
-   - Microservices architecture
-   - Event-driven design
-   - Message queues
-   - Caching layer
+1. **Arquitetura**
+   - Arquitetura de microsserviços
+   - Design orientado a eventos
+   - Filas de mensagens
+   - Camada de cache
 
-2. **Features**
-   - Real-time analytics
-   - Machine learning integration
-   - Advanced reporting
-   - Mobile app enhancements
+2. **Funcionalidades**
+   - Análise em tempo real
+   - Integração com machine learning
+   - Relatórios avançados
+   - Melhorias no aplicativo mobile
 
 3. **DevOps**
-   - CI/CD pipeline
-   - Automated testing
-   - Monitoring and alerting
-   - Infrastructure as code
+   - Pipeline CI/CD
+   - Testes automatizados
+   - Monitoramento e alertas
+   - Infraestrutura como código
 
-## Contributing
+## Contribuindo
 
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a pull request
+1. Faça um fork do repositório
+2. Crie uma branch para sua feature
+3. Faça commit das suas alterações
+4. Faça push para a branch
+5. Crie um Pull Request
 
-## License
+## Licença
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+Este projeto está licenciado sob a Licença MIT - veja o arquivo LICENSE para detalhes. 
