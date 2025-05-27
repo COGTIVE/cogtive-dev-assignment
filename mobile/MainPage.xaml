@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="CogtiveDevAssignment.MainPage"
              Title="Factory Floor Dashboard">
 
     <ScrollView>
         <StackLayout Padding="20">
-            <Frame BackgroundColor="#0056B3" Padding="24" CornerRadius="10" Margin="0,0,0,20">
+            <Frame BackgroundColor="{StaticResource Primary}" Padding="24" Margin="0,0,0,20">
                 <StackLayout>
                     <Label Text="Cogtive Industrial IoT" HorizontalTextAlignment="Center" TextColor="White" FontSize="26" FontAttributes="Bold"/>
                     <Label Text="Factory Floor Operations" HorizontalTextAlignment="Center" TextColor="White" FontSize="16" Margin="0,10,0,0"/>
@@ -18,7 +18,7 @@
             <Picker x:Name="MachinePicker" Title="Select a machine" SelectedIndexChanged="OnMachineSelected" Margin="0,0,0,20"/>
             
             <!-- Machine Status -->
-            <Frame IsVisible="False" x:Name="MachineStatusFrame" BackgroundColor="#F9F9F9" Padding="15" CornerRadius="5" Margin="0,0,0,20">
+            <Frame IsVisible="False" x:Name="MachineStatusFrame" BackgroundColor="{StaticResource LightBackground}" Padding="15" Margin="0,0,0,20">
                 <StackLayout>
                     <Label Text="Machine Status" FontSize="16" FontAttributes="Bold" Margin="0,0,0,10"/>
                     <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto,Auto,Auto">
@@ -38,7 +38,7 @@
             </Frame>
             
             <!-- Data Entry Section -->
-            <Frame IsVisible="False" x:Name="DataEntryFrame" BackgroundColor="#F0F7FF" Padding="15" CornerRadius="5" Margin="0,0,0,20">
+            <Frame IsVisible="False" x:Name="DataEntryFrame" BackgroundColor="{StaticResource DataEntryBackground}" Padding="15" Margin="0,0,0,20">
                 <StackLayout>
                     <Label Text="Production Data Entry" FontSize="16" FontAttributes="Bold" Margin="0,0,0,10"/>
                     
@@ -51,28 +51,28 @@
                     <Label Text="Downtime (minutes)" Margin="0,5,0,0"/>
                     <Entry x:Name="DowntimeEntry" Keyboard="Numeric" Placeholder="Enter downtime in minutes" Margin="0,0,0,10"/>
                     
-                    <Button x:Name="SubmitButton" Text="Submit Production Data" BackgroundColor="#0056B3" TextColor="White" Clicked="OnSubmitClicked" Margin="0,10,0,0" CornerRadius="5"/>
+                    <Button x:Name="SubmitButton" Text="Submit Production Data" BackgroundColor="{StaticResource Primary}" TextColor="White" Clicked="OnSubmitClicked" Margin="0,10,0,0"/>
                 </StackLayout>
             </Frame>
             
             <!-- QR Code Scanner Button -->
-            <Button Text="Scan Equipment QR Code" BackgroundColor="#34495E" TextColor="White" Clicked="OnScanQRClicked" CornerRadius="5" Margin="0,0,0,20"/>
+            <Button Text="Scan Equipment QR Code" BackgroundColor="{StaticResource Secondary}" TextColor="White" Clicked="OnScanQRClicked" Margin="0,0,0,20"/>
             
             <!-- Offline Sync Status -->
-            <Frame BackgroundColor="#FFF9E6" Padding="15" CornerRadius="5">
+            <Frame BackgroundColor="{StaticResource OfflineBackground}" Padding="15">
                 <StackLayout>
                     <Label Text="Offline Sync Status" FontSize="16" FontAttributes="Bold" Margin="0,0,0,10"/>
                     <StackLayout Orientation="Horizontal">
                         <Label Text="Pending uploads:" VerticalOptions="Center" FontAttributes="Bold"/>
                         <Label x:Name="PendingUploadsLabel" Text="0" VerticalOptions="Center" Margin="5,0,0,0"/>
                     </StackLayout>
-                    <Button x:Name="SyncButton" Text="Sync Now" IsEnabled="False" BackgroundColor="#FF9800" TextColor="White" Clicked="OnSyncClicked" CornerRadius="5" Margin="0,10,0,0"/>
+                    <Button x:Name="SyncButton" Text="Sync Now" IsEnabled="False" BackgroundColor="{StaticResource Accent}" TextColor="White" Clicked="OnSyncClicked" Margin="0,10,0,0"/>
                 </StackLayout>
             </Frame>
             
             <!-- Loading Indicator and Error Messages -->
             <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Margin="0,20,0,0"/>
-            <Label x:Name="ErrorMessage" TextColor="#CC0000" IsVisible="False" Margin="0,10,0,0"/>
+            <Label x:Name="ErrorMessage" TextColor="{StaticResource ErrorColor}" IsVisible="False" Margin="0,10,0,0"/>
         </StackLayout>
     </ScrollView>
 </ContentPage>

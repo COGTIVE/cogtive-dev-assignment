@@ -4,47 +4,32 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Xamarin.Forms;
-using Xamarin.Essentials;
+using Microsoft.Maui.Controls;
+using CogtiveDevAssignment.Models;
+using CogtiveDevAssignment.Services;
 
 namespace CogtiveDevAssignment
 {
-    public class Machine
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string SerialNumber { get; set; }
-        public string Type { get; set; }
-        public bool IsActive { get; set; }
-    }
-
-    public class ProductionData
-    {
-        public int Id { get; set; }
-        public int MachineId { get; set; }
-        public DateTime Timestamp { get; set; }
-        // Intentional error: Efficiency should be a decimal/double, not string
-        public string Efficiency { get; set; }
-        public int UnitsProduced { get; set; }
-        public int Downtime { get; set; } // In minutes
-    }
-
     public partial class MainPage : ContentPage
     {
         private const string ApiBaseUrl = "http://10.0.2.2:5000"; // Special IP for Android emulator to reach host
         private readonly HttpClient _httpClient;
+        private readonly IApiService _apiService;
+        private readonly ILocalStorageService _localStorageService;
         private List<Machine> _machines;
         private Machine _selectedMachine;
 
-        public MainPage()
+        public MainPage(IApiService apiService, ILocalStorageService localStorageService)
         {
             InitializeComponent();
             _httpClient = new HttpClient();
-            LoadMachines();
-            UpdateSyncStatus();
+            _apiService = apiService;
+            _localStorageService = localStorageService;
+            Task.Run(async () => await LoadMachines());
+            Task.Run(async () => await UpdateSyncStatus());
         }
 
-        private async void LoadMachines()
+        private async Task LoadMachines()
         {
             try
             {
@@ -126,7 +111,7 @@ namespace CogtiveDevAssignment
             });
         }
 
-        private async void OnMachineSelected(object sender, EventArgs e)
+        private void OnMachineSelected(object sender, EventArgs e)
         {
             int selectedIndex = MachinePicker.SelectedIndex;
             if (selectedIndex == -1) return;
@@ -167,8 +152,7 @@ namespace CogtiveDevAssignment
                 {
                     MachineId = _selectedMachine.Id,
                     Timestamp = DateTime.UtcNow,
-                    // Intentional error: Storing efficiency as string
-                    Efficiency = EfficiencyEntry.Text,
+                    Efficiency = decimal.Parse(EfficiencyEntry.Text),
                     UnitsProduced = int.Parse(UnitsProducedEntry.Text),
                     Downtime = int.Parse(DowntimeEntry.Text)
                 };
